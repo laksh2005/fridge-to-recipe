@@ -23,18 +23,6 @@ GEMINI_API_KEY=your_key_here
 npm run dev
 ```
 
-This starts two things: the Vite dev server (http://localhost:5173, open this
-one) and a small Express server on port 3001 that runs the same recipe handler
-Vercel runs in production. Vite proxies `/api` requests to it, so from the
-browser's point of view there's just one server.
-
-## Deploying
-
-Push to GitHub, import the repo in Vercel (it auto-detects Vite), and add
-`GEMINI_API_KEY` as a project environment variable. `api/generate-recipe.js` is
-picked up automatically as a serverless function — `server.js` and the Express
-proxy are dev-only and aren't used in production.
-
 ## Features
 
 - Free-form ingredient input with example presets
