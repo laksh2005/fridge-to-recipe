@@ -1,4 +1,8 @@
 export default function StepChecklist({ steps, checked, onToggle }) {
+  // A refined recipe can have more steps than the checked array we still hold
+  // for one render, so fall back to false rather than passing undefined to
+  // the checkbox (which would make React treat it as uncontrolled).
+  const isChecked = (index) => checked[index] ?? false;
   const doneCount = checked.filter(Boolean).length;
 
   return (
@@ -12,9 +16,9 @@ export default function StepChecklist({ steps, checked, onToggle }) {
 
       <ol className="steps__list">
         {steps.map((step, index) => (
-          <li key={index} className={checked[index] ? 'is-done' : ''}>
+          <li key={index} className={isChecked(index) ? 'is-done' : ''}>
             <label>
-              <input type="checkbox" checked={checked[index]} onChange={() => onToggle(index)} />
+              <input type="checkbox" checked={isChecked(index)} onChange={() => onToggle(index)} />
               <span>{step}</span>
             </label>
           </li>
