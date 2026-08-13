@@ -6,6 +6,34 @@ checkable steps, servings you can scale, and ingredient swaps.
 The model never talks to you in prose. It returns structured JSON, which the app
 parses, validates, and renders as interactive React components.
 
+## Setup
+
+```bash
+npm install
+cp .env.example .env
+```
+
+Add a Gemini API key to `.env` (free from [Google AI Studio](https://aistudio.google.com/apikey)):
+
+```
+GEMINI_API_KEY=your_key_here
+```
+
+```bash
+npm run dev
+```
+
+This starts two things: the Vite dev server (http://localhost:5173, open this
+one) and a small Express server on port 3001 that runs the same recipe handler
+Vercel runs in production. Vite proxies `/api` requests to it, so from the
+browser's point of view there's just one server.
+
+## Deploying
+
+Push to GitHub, import the repo in Vercel (it auto-detects Vite), and add
+`GEMINI_API_KEY` as a project environment variable. `api/generate-recipe.js` is
+picked up automatically as a serverless function — `server.js` and the Express
+proxy are dev-only and aren't used in production.
 
 ## Features
 
@@ -31,9 +59,14 @@ I used Claude Code throughout, and I understand every file in this repo.
   conversation. It is the choice the rest of the app rests on.
 - **Debugging** — it caught two real bugs during verification that I would have
   shipped otherwise:
-  1. Assigning `undefined` to `process.env.GEMINI_API_KEY` in the dev plugin
-     stores the *string* `"undefined"`, which silently defeated the
-     missing-key check and produced a confusing 502 instead of a clear error.
+  1. An earlier version wired the local dev server as a custom Vite plugin
+     that assigned the API key onto `process.env` directly; assigning
+     `undefined` there stores the *string* `"undefined"`, which silently
+     defeated the missing-key check and produced a confusing 502 instead of a
+     clear error. Replaced that plugin with a plain Express server
+     (`server.js`) for the same reason as everything else here — it's the
+     boring, standard way to run a local API, and easier to explain than a
+     custom Vite middleware.
   2. A refined recipe with more steps than the previous one briefly rendered
      checkboxes with `checked={undefined}`, flipping them from controlled to
      uncontrolled. Fixed in `StepChecklist`.
@@ -43,3 +76,29 @@ I used Claude Code throughout, and I understand every file in this repo.
 
 I wrote the prompt and the validation rules myself, since those are the parts
 that decide whether the app works when the model misbehaves.
+
+## Known limitations
+
+- **Swaps are name-only.** Picking a swap changes the displayed ingredient
+  name but not its quantity — asking the model to convert amounts between
+  unrelated ingredients (e.g. eggs → tofu) produced unreliable numbers. The
+  refinement loop is the honest way to actually recompute a recipe.
+- **Scaled amounts are decimals**, not fractions (`0.75 cup`, not `¾ cup`).
+- **No rate limiting or auth** on the API route — fine for a demo, not for
+  production.
+- **No nutrition or cook times** — kept the schema small on purpose; every
+  extra field is another field the model can get wrong.
+
+## Time spent
+
+Roughly 7–8 hours: schema design and provider setup, the serverless endpoint,
+the generation hook and stale-response handling, the components, testing the
+failure paths in a real browser, and this README.
+
+## Stack
+
+Vite · React 19 · `@google/genai` (Gemini 2.5 Flash) · Express (local dev only)
+· Vercel serverless functions · plain CSS. No state library and no schema/
+validation library — `src/lib/recipeSchema.js` is about forty lines of plain
+`if` checks, which is easier to read than a validation DSL and keeps the
+failure handling visible instead of hidden behind an abstraction.
