@@ -1,8 +1,9 @@
 @import 'tailwindcss';
 
-/* Dark mode is driven by a data-theme attribute on <html> (set by DarkModeToggle),
-   not by the OS setting, so the toggle always wins. */
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+/* Dark mode is a data-theme attribute on <html> (set by DarkModeToggle), not
+   the OS setting, so the toggle always wins. No `dark:` utilities are used —
+   theming instead happens through the CSS variables below, which every
+   Tailwind colour utility (bg-paper, text-ink, ...) reads through @theme. */
 
 /* The palette lives here as plain CSS variables so it can swap per theme.
    @theme below points Tailwind's colour utilities at these, which is what
