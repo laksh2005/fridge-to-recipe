@@ -79,14 +79,21 @@ that decide whether the app works when the model misbehaves.
 
 ## Time spent
 
-Roughly 7–8 hours: schema design and provider setup, the serverless endpoint,
+Roughly 6 hours: schema design and provider setup, the serverless endpoint,
 the generation hook and stale-response handling, the components, testing the
 failure paths in a real browser, and this README.
 
 ## Stack
 
 Vite · React 19 · `@google/genai` (Gemini 2.5 Flash) · Express (local dev only)
-· Vercel serverless functions · plain CSS. No state library and no schema/
-validation library — `src/lib/recipeSchema.js` is about forty lines of plain
-`if` checks, which is easier to read than a validation DSL and keeps the
-failure handling visible instead of hidden behind an abstraction.
+· Vercel serverless functions · Tailwind CSS v4.
+
+The palette is defined once as CSS variables in `src/index.css` and exposed to
+Tailwind through `@theme`, so `bg-paper` / `text-ink` follow the light/dark
+theme automatically. Dark mode is a `data-theme` attribute on `<html>` rather
+than the OS setting, so the toggle always wins.
+
+No state library and no schema/validation library — `src/lib/recipeSchema.js` is
+about forty lines of plain `if` checks, which is easier to read than a
+validation DSL and keeps the failure handling visible instead of hidden behind
+an abstraction.

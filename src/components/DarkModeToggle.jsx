@@ -27,7 +27,7 @@ export default function DarkModeToggle() {
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className="rounded border border-line px-3 py-2 text-ink-soft transition hover:border-ink-soft hover:text-ink"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
     >
