@@ -51,7 +51,7 @@ export default function RecipeCard({ recipe, busy, onRefine }) {
         <h3>Ingredients</h3>
         <ul className="ingredients__list">
           {scaled.map((ingredient, index) => (
-            <li key={ingredient.name}>
+            <li key={ingredient.name} style={{ '--i': index }}>
               <span className="ingredients__amount">{formatQuantity(ingredient)}</span>
               <span className="ingredients__name">
                 {swaps[index] || ingredient.name}

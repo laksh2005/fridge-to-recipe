@@ -16,7 +16,7 @@ export default function StepChecklist({ steps, checked, onToggle }) {
 
       <ol className="steps__list">
         {steps.map((step, index) => (
-          <li key={index} className={isChecked(index) ? 'is-done' : ''}>
+          <li key={index} className={isChecked(index) ? 'is-done' : ''} style={{ '--i': index }}>
             <label>
               <input type="checkbox" checked={isChecked(index)} onChange={() => onToggle(index)} />
               <span>{step}</span>
